@@ -11,6 +11,8 @@ export const env = {
   frontendUrl: process.env.FRONTEND_URL ?? "http://localhost:5173",
   publicSiteUrl: process.env.PUBLIC_SITE_URL ?? "http://localhost:5173",
   listingFeeUsd: Number(process.env.LISTING_FEE_USD ?? 25),
+  // Auto-seed the database on first start when it's empty (idempotent). Set to "false" to disable.
+  seedOnStart: (process.env.SEED_ON_START ?? "true").toLowerCase() !== "false",
   crypto: {
     btc: process.env.CRYPTO_BTC_ADDRESS ?? "bc1qexamplechangebeforelaunch",
     eth: process.env.CRYPTO_ETH_ADDRESS ?? "0xExampleChangeBeforeLaunch",
