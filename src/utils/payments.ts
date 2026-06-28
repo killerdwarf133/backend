@@ -49,8 +49,22 @@ export function buildListingFeeMessage(listing: ListingDocument, methodName: str
 }
 
 export function buildContactRedirect(channel: string, target: string, message: string) {
+  const raw = (target || "").trim();
   const encoded = encodeURIComponent(message);
-  const handle = (target || "").replace(/^@/, "").trim();
+
+  // If the admin pasted a link (full URL, or something like "m.me/page" or
+  // "facebook.com/page" without the scheme), use it directly — only appending
+  // the prefilled message to a bare wa.me link.
+  const looksLikeLink = /^https?:\/\//i.test(raw) || raw.includes("/") || /\.[a-z]{2,}/i.test(raw);
+  if (looksLikeLink) {
+    const url = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+    if (channel === "whatsapp" && /wa\.me/i.test(url) && !/[?&]text=/.test(url)) {
+      return `${url}${url.includes("?") ? "&" : "?"}text=${encoded}`;
+    }
+    return url;
+  }
+
+  const handle = raw.replace(/^@/, "");
   if (channel === "whatsapp") {
     return `https://wa.me/${handle.replace(/[^0-9]/g, "")}?text=${encoded}`;
   }
