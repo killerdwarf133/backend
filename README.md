@@ -23,7 +23,8 @@ cp .env.example .env     # then edit .env (see the table below)
 | `MONGO_URI` | MongoDB connection string |
 | `JWT_SECRET` | **change to a long random secret** |
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | admin account the seeder creates — **change these** |
-| `FRONTEND_URL` | frontend origin (CORS) |
+| `FRONTEND_URL` | primary frontend origin (CORS), no trailing slash |
+| `FRONTEND_URLS` | optional comma-separated extra frontend origins, no trailing slashes |
 | `PUBLIC_SITE_URL` | public site URL (used in payment messages) |
 | `SEED_ON_START` | auto-seed on first start when DB is empty (default `true`) |
 | `LISTING_FEE_USD` | P2P listing fee (default 25) |

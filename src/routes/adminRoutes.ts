@@ -32,6 +32,7 @@ const gameSchema = z.object({
   date: z.string().min(10),
   localTime: z.string().min(4),
   city: z.string().min(2),
+  stadium: z.string().min(2).max(120).optional(),
   homeLabel: z.string().min(1),
   awayLabel: z.string().min(1),
   homeTeamCode: z.string().optional(),
@@ -330,7 +331,8 @@ router.post("/games", async (req, res, next) => {
     }
     const game = await Game.create({
       ...data,
-      stadium: venue.stadium,
+      // Admin can override the stadium; otherwise use the city's default venue.
+      stadium: data.stadium?.trim() || venue.stadium,
       region: venue.region,
       homeTeamCode: data.homeTeamCode?.toUpperCase() ?? "",
       awayTeamCode: data.awayTeamCode?.toUpperCase() ?? "",
@@ -354,6 +356,10 @@ router.patch("/games/:id", async (req, res, next) => {
       }
       update.stadium = venue.stadium;
       update.region = venue.region;
+    }
+    // An explicit stadium overrides the city's default venue.
+    if (data.stadium?.trim()) {
+      update.stadium = data.stadium.trim();
     }
     if (data.homeTeamCode !== undefined) {
       update.homeTeamCode = data.homeTeamCode.toUpperCase();
